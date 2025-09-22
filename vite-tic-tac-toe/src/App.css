@@ -1,0 +1,27 @@
+/* @import "tailwindcss"
+ @tailwind base;
+@tailwind components;
+@tailwind utilities; */
+
+
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+
+}
+
+.box-container {
+  height: 100px;
+  width: 100px;
+  background-color: cornflowerblue;
+  padding: 4px;
+  border: 10px;
+  border-color: aliceblue;
+}
