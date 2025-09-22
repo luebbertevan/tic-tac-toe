@@ -28,8 +28,9 @@ function App() {
 
 	return (
 		<div>
-			<Grid />
-			<h1 className="text-red-500">Hello Tailwind!</h1>
+			<h1 className="text-red-500">Tic-tac-toe!</h1>
+      <Grid />
+			
 		</div>
 	);
 }
