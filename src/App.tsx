@@ -1,7 +1,36 @@
 import { useState } from "react";
 import "./App.css";
-import type { TicTacToe, Cell } from "./tictactoe";
-import { makeMove, reset, determineDraw, determineWinner } from './tictactoe';
+import type { TicTacToe, Cell, Winner } from "./tictactoe";
+import { makeMove, reset, determineDraw, determineWinner} from './tictactoe';
+
+
+function Replay({handleReplay}: {handleReplay: () => void;}) {
+  return(
+    <div>
+      <button onClick={handleReplay}>Replay?</button>
+    </div>
+  )
+}
+
+function Outcome({ winner, isDraw, handleReplay}: {winner: Winner, isDraw: boolean, handleReplay: () => void;}){
+  if(winner !== null){
+    return (
+      <div>
+        {winner} Won!
+        <Replay handleReplay={handleReplay}/>
+      </div>
+    )
+  }
+  else if(isDraw){
+    return (
+      <div>
+        Draw
+        <Replay handleReplay={handleReplay}/>
+      </div>
+    )
+  }
+  return null;
+}
 
 function Box({ cell, onClickHandler, index }: { cell: Cell, onClickHandler: (index: number) => void; index: number }) {
 	return (
@@ -50,16 +79,23 @@ function App() {
       
       setGameState(movePlayedState);
 		}
-
-
 	}
 
-	return (
-		<div>
-			<h1 className="text-red-500">Tic-tac-toe!</h1>
-			<GameBoard board={gameState.board} onClickHandler={onClick} />
-		</div>
-	);
+  function handleReplay() {
+    setGameState(reset(gameState))
+  }
+
+const winner = determineWinner(gameState.board);
+const draw = determineDraw(gameState.board);
+
+return (
+  <div>
+    <h1 className="text-red-500">Tic-tac-toe!</h1>
+    <GameBoard board={gameState.board} onClickHandler={onClick} />
+    {(winner || draw) && <Outcome winner={winner} isDraw={draw} handleReplay={handleReplay} />}
+  </div>
+);
+
 }
 
 export default App;
