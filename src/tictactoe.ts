@@ -1,10 +1,11 @@
 export type Player = "X" | "O";
 export type Cell = Player | null;
-export type Winner = null;
+export type Winner = Player | null;
 
 export type TicTacToe = {
 	board: Cell[];
 	currentPlayer: Player;
+	winner: Winner;
 };
 
 export function makeMove(state: TicTacToe, index: number): TicTacToe | null {
@@ -13,7 +14,6 @@ export function makeMove(state: TicTacToe, index: number): TicTacToe | null {
 	newState.board[index] = state.currentPlayer;
 	const newPlayer: Player = state.currentPlayer === "X" ? "O" : "X";
 	newState.currentPlayer = newPlayer;
-
 	return newState;
 }
 
@@ -24,9 +24,7 @@ export function reset(state: TicTacToe): TicTacToe {
 	return newState;
 }
 
-//if (board.every((cell) => cell !== null))
-
-export function determineWinner(board: Player[]): Player | null {
+export function determineWinner(board: Cell[]): Player | null {
 	const winningLines: number[][] = [
 		[0, 1, 2],
 		[3, 4, 5],
@@ -48,7 +46,7 @@ export function determineWinner(board: Player[]): Player | null {
 	}
 }
 
-export function determineDraw(board: Player[]): boolean {
+export function determineDraw(board: Cell[]): boolean {
 	return board.every((cell) => cell !== null)
 }
 	

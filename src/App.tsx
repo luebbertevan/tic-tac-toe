@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "./App.css";
 import type { TicTacToe, Cell } from "./tictactoe";
-import { makeMove, reset } from "./tictactoe";
+import { makeMove, reset, determineDraw, determineWinner } from './tictactoe';
 
 function Box({ cell, onClickHandler, index }: { cell: Cell, onClickHandler: (index: number) => void; index: number }) {
 	return (
@@ -30,6 +30,7 @@ function App() {
 	const initialGame: TicTacToe = {
 		board: Array(9).fill(null),
 		currentPlayer: "X",
+    winner: null
 	};
 
 	const [gameState, setGameState] = useState(initialGame);
@@ -37,8 +38,20 @@ function App() {
 	function onClick(index: number) {
 		const movePlayedState: TicTacToe | null = makeMove(gameState, index);
 		if (movePlayedState) {
-			setGameState(movePlayedState);
+      const winner = determineWinner(movePlayedState.board)
+      
+      if(winner != null) {
+        console.log(`${winner} wins!`)
+      } 
+      if(determineDraw(movePlayedState.board)) {
+        console.log("Draw")
+      }
+			
+      
+      setGameState(movePlayedState);
 		}
+
+
 	}
 
 	return (
