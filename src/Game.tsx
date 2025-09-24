@@ -18,6 +18,11 @@ async function makeMove(index: number) {
 	return await res.json()
 }
 
+async function reset() {
+	const res = await fetch("/reset", {method: "POST" })
+	return await res.json()
+}
+
 type BoxProps = {
 	cell: Cell;
 	onClick: () => void;
@@ -82,10 +87,15 @@ function Outcome({ winner, isDraw, onReplay }: OutcomeProps) {
 function Game() {
 	const queryClient = useQueryClient()
 
-	const mutation = useMutation({
+	const moveMutation = useMutation({
 		mutationFn: makeMove,
 		onSuccess: () => queryClient.invalidateQueries({ queryKey: ['game']})
 	})
+
+	const resetMutation = useMutation({
+  		mutationFn: reset,
+ 		onSuccess: () => queryClient.invalidateQueries({ queryKey: ['game']})
+	});
 
 	const { isPending, isFetching, error, data } = useQuery({ queryKey: ['game'], queryFn: getGame })
 	if(isPending) {
@@ -104,12 +114,13 @@ function Game() {
 
 
 	const handleCellClick = (index: number) => {
-		mutation.mutate(index)
+		moveMutation.mutate(index)
 	};
 
 	const handleReplay = () => {
-		setGameState(createInitialGame());
+		resetMutation.mutate()
 	};
+
 
 	return (
 		<div className="min-h-screen bg-gray-100 py-8">
