@@ -12,7 +12,7 @@ let gameState = createInitialGame();
 app.get("/game", (_req: Request, res: Response) => res.json(gameState));
 
 app.post("/move", (req: Request, res: Response) => {
-	const index = req.body;
+	const { index } = req.body;
 	const newState = makeMove(gameState, index);
 
 	if (!newState) {
@@ -29,5 +29,5 @@ app.post("/reset", (_req: Request, res: Response) => {
 });
 
 ViteExpress.listen(app, PORT, () =>
-	console.log(`Server is listening at ${PORT}`)
+	console.log(`Server is listening at http://localhost:${PORT}`)
 );

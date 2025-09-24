@@ -11,7 +11,7 @@ async function makeMove(index: number) {
 	const res = await fetch("/move", {
 		method: "POST",
 		headers: { "Content-Type": "application/json" },
-		body: JSON.stringify(index),
+		body: JSON.stringify({ index }),
 	});
 
 	if (!res.ok) {
