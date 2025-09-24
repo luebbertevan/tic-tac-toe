@@ -1,7 +1,22 @@
 import { useState } from "react";
 import "./App.css";
 import type { TicTacToe, Cell, Winner } from "./tictactoe";
-import { makeMove, createInitialGame } from "./tictactoe";
+import { makeMove, createInitialGame } from './tictactoe';
+import { QueryClient, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+
+async function getGame(): Promise<TicTacToe> {
+	const res = await fetch("/game")
+	return await res.json()
+}
+
+async function makeMove(index: number) {
+	const res = await fetch("/move", {
+		method: "POST",
+		headers: { "Content-Type" : "appliction/json" },
+		body: JSON.stringify(index),
+	})
+	return await res.json()
+}
 
 type BoxProps = {
 	cell: Cell;
@@ -65,13 +80,31 @@ function Outcome({ winner, isDraw, onReplay }: OutcomeProps) {
 }
 
 function Game() {
-	const [gameState, setGameState] = useState<TicTacToe>(createInitialGame());
+	const queryClient = useQueryClient()
+
+	const mutation = useMutation({
+		mutationFn: makeMove,
+		onSuccess: () => queryClient.invalidateQueries({ queryKey: ['game']})
+	})
+
+	const { isPending, isFetching, error, data } = useQuery({ queryKey: ['game'], queryFn: getGame })
+	if(isPending) {
+		console.log("Loading...")
+		return <h2>Loading...</h2>
+	}
+	if(error){
+		console.log(`Error on load ${error.message}`)
+		return <h2>Something went wrong: {error.message}</h2>
+	}
+	if(isFetching) {
+		console.log("Fetching...")
+	}
+
+	const gameState = data
+
 
 	const handleCellClick = (index: number) => {
-		const newState = makeMove(gameState, index);
-		if (newState) {
-			setGameState(newState);
-		}
+		mutation.mutate(index)
 	};
 
 	const handleReplay = () => {
