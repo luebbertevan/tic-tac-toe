@@ -1,10 +1,16 @@
 import "./App.css";
-import Game from './Game'
+import Game from "./Game";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
 
 function App() {
-	
 	return (
-    <Game/>
+		<>
+			<QueryClientProvider client={queryClient}>
+				<Game />
+			</QueryClientProvider>
+		</>
 	);
 }
 
