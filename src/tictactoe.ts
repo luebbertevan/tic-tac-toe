@@ -6,23 +6,36 @@ export type TicTacToe = {
 	board: Cell[];
 	currentPlayer: Player;
 	winner: Winner;
+	isDraw: boolean;
 };
 
 export function makeMove(state: TicTacToe, index: number): TicTacToe | null {
-	if (state.board[index] !== null) return null;
-	const newState: TicTacToe = structuredClone(state);
-	newState.board[index] = state.currentPlayer;
-	const newPlayer: Player = state.currentPlayer === "X" ? "O" : "X";
-	newState.currentPlayer = newPlayer;
-	return newState;
+	if (state.board[index] !== null || state.winner || state.isDraw) {
+    	return null;
+  	}
+
+	const newBoard = [...state.board];
+	newBoard[index] = state.currentPlayer;
+
+	const winner = determineWinner(newBoard);
+  	const isDraw = !winner && newBoard.every(cell => cell !== null);
+  
+	return {
+		board: newBoard,
+		currentPlayer: state.currentPlayer === "X" ? "O" : "X",
+		winner,
+		isDraw
+	};
 }
 
-export function reset(state: TicTacToe): TicTacToe {
-	const newState: TicTacToe = structuredClone(state);
-	newState.board = Array(9).fill(null);
-	newState.currentPlayer = "X";
-	return newState;
-}
+	export function createInitialGame(): TicTacToe {
+	return {
+		board: Array(9).fill(null),
+		currentPlayer: "X",
+		winner: null,
+		isDraw: false
+	};
+	}
 
 export function determineWinner(board: Cell[]): Winner {
 	const winningLines: number[][] = [
@@ -35,18 +48,12 @@ export function determineWinner(board: Cell[]): Winner {
 		[0, 4, 8],
 		[2, 4, 6],
 	];
-	const winningLine = winningLines.find(([a, b, c,]) => 
-		(board[a] !== null) && (board[a] === board[b]) && (board[b] === board[c])
-	)
-	if(winningLine !== undefined){
-		return board[winningLine[0]]
+	
+	for (const [a, b, c] of winningLines) {
+		if (board[a] && board[a] === board[b] && board[b] === board[c]) {
+		return board[a];
+		}
 	}
-	else {
-		return null
-	}
-}
-
-export function determineDraw(board: Cell[]): boolean {
-	return board.every((cell) => cell !== null)
+	return null;
 }
 	
