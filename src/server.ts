@@ -1,15 +1,24 @@
 import express, { type Request, type Response } from "express";
 import ViteExpress from "vite-express";
 import { createInitialGame, makeMove } from "./tictactoe";
+import type { TicTacToe } from "./types";
 
 const app = express();
 const PORT = 3000;
 
 app.use(express.json());
 
-let gameState = createInitialGame();
+let games = new Map<string, TicTacToe>()
 
-app.get("/game", (_req: Request, res: Response) => res.json(gameState));
+let gameState = createInitialGame();
+games.set(gameState.gameID, gameState);
+
+app.get("/game:id", (req: Request, res: Response) => {
+	const { gameID } = req.body;
+	const gameState = games.get(gameID)
+	res.json(gameState)
+});
+
 
 app.post("/move", (req: Request, res: Response) => {
 	const { index } = req.body;
@@ -24,7 +33,7 @@ app.post("/move", (req: Request, res: Response) => {
 });
 
 app.post("/reset", (_req: Request, res: Response) => {
-	gameState = createInitialGame();
+	gameState = createInitialGame(); //FIXME do I need new function to keep the same id?
 	res.json(gameState);
 });
 

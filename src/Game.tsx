@@ -3,7 +3,7 @@ import type { TicTacToe, Cell, Winner } from "./types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 async function getGame(): Promise<TicTacToe> {
-	const res = await fetch("/game");
+	const res = await fetch("/game:id");
 	return await res.json();
 }
 
