@@ -12,6 +12,7 @@ export function makeMove(state: TicTacToe, index: number): TicTacToe | null {
 	const isDraw = !winner && newBoard.every((cell) => cell !== null);
 
 	return {
+		...state,
 		board: newBoard,
 		currentPlayer: state.currentPlayer === "X" ? "O" : "X",
 		winner,
@@ -25,6 +26,7 @@ export function createInitialGame(): TicTacToe {
 		currentPlayer: "X",
 		winner: null,
 		isDraw: false,
+		gameID: crypto.randomUUID()
 	};
 }
 

@@ -7,4 +7,5 @@ export type TicTacToe = {
 	currentPlayer: Player;
 	winner: Winner;
 	isDraw: boolean;
+	gameID: string;
 };
