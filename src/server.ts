@@ -8,32 +8,35 @@ const PORT = 3000;
 
 app.use(express.json());
 
-const games = new Map<string, TicTacToe>()
-
-app.get("/game/:gameID", (req: Request, res: Response) => {
-	const gameID = req.params.gameID
-	const gameState = games.get(gameID)
-	res.json(gameState)
-});
+const games = new Map<string, TicTacToe>();
 
 app.post("/create", (_req: Request, res: Response) => {
-	const newGame = createInitialGame()
-	const gameID = newGame.gameID
-	games.set(gameID, newGame)
-	res.json(gameID)
-})
+	const newGame = createInitialGame();
+	games.set(newGame.gameID, newGame);
+	res.json(newGame);
+});
 
+app.get("/game/:gameID", (req: Request, res: Response) => {
+	const gameID = req.params.gameID;
+	const gameState = games.get(gameID);
+	res.json(gameState);
+});
 
-app.post("/move", (req: Request, res: Response) => {
+app.post("/move:gameID", (req: Request, res: Response) => {
 	const { index } = req.body;
+	const gameID = req.params.gameID;
+	const gameState = games.get(gameID);
+	if (!gameState) {
+		return res.status(404).json({ error: "Game not found" });
+	}
 	const newState = makeMove(gameState, index);
 
 	if (!newState) {
 		return res.status(400).json({ error: "Invalid move" });
 	}
 
-	gameState = newState;
-	res.json(gameState);
+	games.set(gameID, newState)
+	res.json(newState);
 });
 
 app.post("/reset", (_req: Request, res: Response) => {
