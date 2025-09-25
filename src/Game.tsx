@@ -1,26 +1,8 @@
 import "./App.css";
 import type { TicTacToe, Cell, Winner } from "./types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getGame, createGame, makeMove } from "./api";
 
-async function getGame(): Promise<TicTacToe> {
-	const res = await fetch("/game");
-	return await res.json();
-}
-
-async function makeMove(index: number) {
-	const res = await fetch("/move", {
-		method: "POST",
-		headers: { "Content-Type": "application/json" },
-		body: JSON.stringify({ index }),
-	});
-
-	if (!res.ok) {
-		const err = await res.json();
-		throw new Error(err.error || "Unknown error");
-	}
-
-	return await res.json();
-}
 
 async function reset() {
 	const res = await fetch("/reset", { method: "POST" });
@@ -106,7 +88,7 @@ function Game() {
 
 	const { isPending, isFetching, error, data } = useQuery({
 		queryKey: ["game"],
-		queryFn: getGame,
+		queryFn: createGame,
 	});
 	if (isPending) {
 		console.log("Loading...");
