@@ -1,13 +1,4 @@
-export type Player = "X" | "O";
-export type Cell = Player | null;
-export type Winner = Player | null;
-
-export type TicTacToe = {
-	board: Cell[];
-	currentPlayer: Player;
-	winner: Winner;
-	isDraw: boolean;
-};
+import { type Cell, type Winner, type TicTacToe } from "./types";
 
 export function makeMove(state: TicTacToe, index: number): TicTacToe | null {
 	if (state.board[index] !== null || state.winner || state.isDraw) {

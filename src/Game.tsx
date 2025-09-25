@@ -1,5 +1,5 @@
 import "./App.css";
-import type { TicTacToe, Cell, Winner } from "./tictactoe";
+import type { TicTacToe, Cell, Winner } from "./types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 async function getGame(): Promise<TicTacToe> {
