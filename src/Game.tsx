@@ -1,11 +1,7 @@
 import "./App.css";
 import type { TicTacToe, Cell, Winner } from "./types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-
-async function getGame(): Promise<TicTacToe> {
-	const res = await fetch("/game:id");
-	return await res.json();
-}
+import { getGame, createGame } from "./api";
 
 async function makeMove(index: number) {
 	const res = await fetch("/move", {
@@ -106,7 +102,10 @@ function Game() {
 
 	const { isPending, isFetching, error, data } = useQuery({
 		queryKey: ["game"],
-		queryFn: getGame,
+		queryFn: async () => { //Fixme
+			const gameID = await createGame();
+			return getGame(gameID);
+		},
 	});
 	if (isPending) {
 		console.log("Loading...");

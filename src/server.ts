@@ -8,16 +8,20 @@ const PORT = 3000;
 
 app.use(express.json());
 
-let games = new Map<string, TicTacToe>()
+const games = new Map<string, TicTacToe>()
 
-let gameState = createInitialGame();
-games.set(gameState.gameID, gameState);
-
-app.get("/game:id", (req: Request, res: Response) => {
-	const { gameID } = req.body;
+app.get("/game/:gameID", (req: Request, res: Response) => {
+	const gameID = req.params.gameID
 	const gameState = games.get(gameID)
 	res.json(gameState)
 });
+
+app.post("/create", (_req: Request, res: Response) => {
+	const newGame = createInitialGame()
+	const gameID = newGame.gameID
+	games.set(gameID, newGame)
+	res.json(gameID)
+})
 
 
 app.post("/move", (req: Request, res: Response) => {
