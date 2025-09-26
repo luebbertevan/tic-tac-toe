@@ -13,7 +13,6 @@ const games = new Map<string, TicTacToe>();
 app.post("/create", (_req: Request, res: Response) => {
 	const newGame = createInitialGame();
 	games.set(newGame.gameID, newGame);
-	console.log(`at create post endpoint with ${newGame.gameID}`)
 	res.json({gameID: newGame.gameID});
 });
 
