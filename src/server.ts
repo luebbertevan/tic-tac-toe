@@ -13,16 +13,19 @@ const games = new Map<string, TicTacToe>();
 app.post("/create", (_req: Request, res: Response) => {
 	const newGame = createInitialGame();
 	games.set(newGame.gameID, newGame);
-	res.json(newGame);
+	res.json({gameID: newGame.gameID});
 });
 
 app.get("/game/:gameID", (req: Request, res: Response) => {
 	const gameID = req.params.gameID;
 	const gameState = games.get(gameID);
+	if (!gameState) {
+		return res.status(404).json({ error: "Game not found" });
+	}
 	res.json(gameState);
 });
 
-app.post("/move:gameID", (req: Request, res: Response) => {
+app.post("/move/:gameID", (req: Request, res: Response) => {
 	const { index } = req.body;
 	const gameID = req.params.gameID;
 	const gameState = games.get(gameID);
@@ -39,9 +42,17 @@ app.post("/move:gameID", (req: Request, res: Response) => {
 	res.json(newState);
 });
 
-app.post("/reset", (_req: Request, res: Response) => {
-	gameState = createInitialGame(); //FIXME do I need new function to keep the same id?
-	res.json(gameState);
+app.post("/reset/:gameID", (req: Request, res: Response) => {
+  const gameID = req.params.gameID;
+  const oldGame = games.get(gameID);
+
+  if (!oldGame) {
+    return res.status(404).json({ error: "Game not found" });
+  }
+
+  const newGame = { ...createInitialGame(), gameID }; // keep the same ID
+  games.set(gameID, newGame);
+  res.json(newGame);
 });
 
 ViteExpress.listen(app, PORT, () =>
