@@ -64,12 +64,13 @@ function Outcome({ winner, isDraw, onReplay }: OutcomeProps) {
 	);
 }
 
-function Game({ gameID }: { gameID: string} ) {
+function Game({ gameID }: { gameID: string }) {
 	const queryClient = useQueryClient();
 
 	const moveMutation = useMutation({
 		mutationFn: makeMove,
-		onSuccess: () => queryClient.invalidateQueries({ queryKey: ["game", gameID] }),
+		onSuccess: () =>
+			queryClient.invalidateQueries({ queryKey: ["game", gameID] }),
 		onError: (error: Error) => {
 			console.log("Move failed:", error.message);
 		},
@@ -77,7 +78,8 @@ function Game({ gameID }: { gameID: string} ) {
 
 	const resetMutation = useMutation({
 		mutationFn: reset,
-		onSuccess: () => queryClient.invalidateQueries({ queryKey: ["game", gameID] }),
+		onSuccess: () =>
+			queryClient.invalidateQueries({ queryKey: ["game", gameID] }),
 	});
 
 	const { isPending, isFetching, error, data } = useQuery({

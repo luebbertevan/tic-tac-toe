@@ -13,7 +13,11 @@ const games = new Map<string, TicTacToe>();
 app.post("/create", (_req: Request, res: Response) => {
 	const newGame = createInitialGame();
 	games.set(newGame.gameID, newGame);
-	res.json({gameID: newGame.gameID});
+	res.json({ gameID: newGame.gameID });
+});
+
+app.get("/list", (_req: Request, res: Response) => {
+	res.json([...games.keys()]);
 });
 
 app.get("/game/:gameID", (req: Request, res: Response) => {
@@ -38,21 +42,21 @@ app.post("/move/:gameID", (req: Request, res: Response) => {
 		return res.status(400).json({ error: "Invalid move" });
 	}
 
-	games.set(gameID, newState)
+	games.set(gameID, newState);
 	res.json(newState);
 });
 
 app.post("/reset/:gameID", (req: Request, res: Response) => {
-  const gameID = req.params.gameID;
-  const oldGame = games.get(gameID);
+	const gameID = req.params.gameID;
+	const oldGame = games.get(gameID);
 
-  if (!oldGame) {
-    return res.status(404).json({ error: "Game not found" });
-  }
+	if (!oldGame) {
+		return res.status(404).json({ error: "Game not found" });
+	}
 
-  const newGame = { ...createInitialGame(), gameID }; // keep the same ID
-  games.set(gameID, newGame);
-  res.json(newGame);
+	const newGame = { ...createInitialGame(), gameID }; // keep the same ID
+	games.set(gameID, newGame);
+	res.json(newGame);
 });
 
 ViteExpress.listen(app, PORT, () =>
