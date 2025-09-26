@@ -1,2 +1,2 @@
-#Tic-Tac-Toe Fullstack Project
-##Author: Evan Luebbert
+# Tic-Tac-Toe Fullstack Project
+## Author: Evan Luebbert
