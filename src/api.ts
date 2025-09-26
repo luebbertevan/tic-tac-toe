@@ -31,3 +31,8 @@ export async function makeMove({gameID, index}: { gameID: string, index: number}
 
 	return await res.json();
 }
+
+export async function reset(gameID: string) {
+	const res = await fetch(`/reset/${gameID}`, { method: "POST" });
+	return await res.json();
+}

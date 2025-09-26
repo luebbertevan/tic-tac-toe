@@ -43,10 +43,18 @@ app.post("/move/:gameID", (req: Request, res: Response) => {
 	res.json(newState);
 });
 
-// app.post("/reset", (_req: Request, res: Response) => {
-// 	gameState = createInitialGame(); //FIXME do I need new function to keep the same id?
-// 	res.json(gameState);
-// });
+app.post("/reset/:gameID", (req: Request, res: Response) => {
+  const gameID = req.params.gameID;
+  const oldGame = games.get(gameID);
+
+  if (!oldGame) {
+    return res.status(404).json({ error: "Game not found" });
+  }
+
+  const newGame = { ...createInitialGame(), gameID }; // keep the same ID
+  games.set(gameID, newGame);
+  res.json(newGame);
+});
 
 ViteExpress.listen(app, PORT, () =>
 	console.log(`Server is listening at http://localhost:${PORT}`)

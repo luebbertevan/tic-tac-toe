@@ -1,12 +1,7 @@
 import "./App.css";
 import type { TicTacToe, Cell, Winner } from "./types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getGame, makeMove } from "./api";
-
-async function reset() {
-	const res = await fetch("/reset", { method: "POST" });
-	return await res.json();
-}
+import { getGame, makeMove, reset } from "./api";
 
 type BoxProps = {
 	cell: Cell;
@@ -74,7 +69,7 @@ function Game({ gameID }: { gameID: string} ) {
 
 	const moveMutation = useMutation({
 		mutationFn: makeMove,
-		onSuccess: () => queryClient.invalidateQueries({ queryKey: ["game"] }),
+		onSuccess: () => queryClient.invalidateQueries({ queryKey: ["game", gameID] }),
 		onError: (error: Error) => {
 			console.log("Move failed:", error.message);
 		},
@@ -82,11 +77,11 @@ function Game({ gameID }: { gameID: string} ) {
 
 	const resetMutation = useMutation({
 		mutationFn: reset,
-		onSuccess: () => queryClient.invalidateQueries({ queryKey: ["game"] }),
+		onSuccess: () => queryClient.invalidateQueries({ queryKey: ["game", gameID] }),
 	});
 
 	const { isPending, isFetching, error, data } = useQuery({
-		queryKey: ["game"],
+		queryKey: ["game", gameID],
 		queryFn: () => getGame(gameID),
 	});
 	if (isPending) {
@@ -110,7 +105,7 @@ function Game({ gameID }: { gameID: string} ) {
 
 	const handleReplay = () => {
 		console.log("Reseting");
-		resetMutation.mutate();
+		resetMutation.mutate(gameID);
 	};
 
 	return (
