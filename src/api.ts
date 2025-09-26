@@ -1,21 +1,24 @@
 import { type TicTacToe } from "./types";
 
-
-export async function createGame(): Promise<TicTacToe> {
-	const res = await fetch("/create", {
-		method: "POST",
-	})	
-	const newGame: TicTacToe = await res.json()
-	return newGame
+export async function createGame(): Promise<string> {
+	console.log("sending create request")
+  const res = await fetch("/create", { method: "POST" });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ error: "Unknown" }));
+    throw new Error(err.error || "Failed to create game"); //goes up callstack to noError in React Query
+  }
+  const { gameID } = await res.json();
+  console.log(`Created new game with ID: ${gameID}`)
+  return gameID;
 }
 
 export async function getGame(gameID: string): Promise<TicTacToe> {
-	const res = await fetch("/game/" + gameID);
+	const res = await fetch(`/game/${gameID}`);
 	return await res.json();
 }
 
-export async function makeMove(gameID: string, index: number) {
-	const res = await fetch("/move" + gameID, {
+export async function makeMove({gameID, index}: { gameID: string, index: number} ) {
+	const res = await fetch(`/move/${gameID}`, {
 		method: "POST",
 		headers: { "Content-Type": "application/json" },
 		body: JSON.stringify({ index }),

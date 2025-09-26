@@ -1,8 +1,7 @@
 import "./App.css";
 import type { TicTacToe, Cell, Winner } from "./types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getGame, createGame, makeMove } from "./api";
-
+import { getGame, makeMove } from "./api";
 
 async function reset() {
 	const res = await fetch("/reset", { method: "POST" });
@@ -70,7 +69,7 @@ function Outcome({ winner, isDraw, onReplay }: OutcomeProps) {
 	);
 }
 
-function Game() {
+function Game({ gameID }: { gameID: string} ) {
 	const queryClient = useQueryClient();
 
 	const moveMutation = useMutation({
@@ -88,7 +87,7 @@ function Game() {
 
 	const { isPending, isFetching, error, data } = useQuery({
 		queryKey: ["game"],
-		queryFn: createGame,
+		queryFn: () => getGame(gameID),
 	});
 	if (isPending) {
 		console.log("Loading...");
@@ -106,7 +105,7 @@ function Game() {
 
 	const handleCellClick = (index: number) => {
 		console.log(`Making move at index: ${index}`);
-		moveMutation.mutate(index);
+		moveMutation.mutate({ gameID, index });
 	};
 
 	const handleReplay = () => {
