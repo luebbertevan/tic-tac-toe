@@ -1,5 +1,5 @@
 import "./App.css";
-import type { TicTacToe, Cell, Winner } from "./types";
+import type { Cell, Winner } from "./types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getGame, makeMove, reset } from "./api";
 
@@ -64,12 +64,19 @@ function Outcome({ winner, isDraw, onReplay }: OutcomeProps) {
 	);
 }
 
-function Game({ gameID }: { gameID: string} ) {
+function Game({
+	gameID,
+	onLobbyClick,
+}: {
+	gameID: string;
+	onLobbyClick: () => void;
+}) {
 	const queryClient = useQueryClient();
 
 	const moveMutation = useMutation({
 		mutationFn: makeMove,
-		onSuccess: () => queryClient.invalidateQueries({ queryKey: ["game", gameID] }),
+		onSuccess: () =>
+			queryClient.invalidateQueries({ queryKey: ["game", gameID] }),
 		onError: (error: Error) => {
 			console.log("Move failed:", error.message);
 		},
@@ -77,7 +84,8 @@ function Game({ gameID }: { gameID: string} ) {
 
 	const resetMutation = useMutation({
 		mutationFn: reset,
-		onSuccess: () => queryClient.invalidateQueries({ queryKey: ["game", gameID] }),
+		onSuccess: () =>
+			queryClient.invalidateQueries({ queryKey: ["game", gameID] }),
 	});
 
 	const { isPending, isFetching, error, data } = useQuery({
@@ -85,15 +93,15 @@ function Game({ gameID }: { gameID: string} ) {
 		queryFn: () => getGame(gameID),
 	});
 	if (isPending) {
-		console.log("Loading...");
-		return <h2>Loading...</h2>;
+		console.log("Game Loading...");
+		return <h2>Game Loading...</h2>;
 	}
 	if (error) {
-		console.log(`Error on load ${error.message}`);
+		console.log(`Error on game load ${error.message}`);
 		return <h2>Something went wrong: {error.message}</h2>;
 	}
 	if (isFetching) {
-		console.log("Fetching...");
+		console.log("Fetching Game...");
 	}
 
 	const gameState = data;
@@ -125,6 +133,13 @@ function Game({ gameID }: { gameID: string} ) {
 					isDraw={gameState.isDraw}
 					onReplay={handleReplay}
 				/>
+
+				<button
+					onClick={onLobbyClick}
+					className="mt-4 px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+				>
+					Back to Lobby
+				</button>
 			</div>
 		</div>
 	);

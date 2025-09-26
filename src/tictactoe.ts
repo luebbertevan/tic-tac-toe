@@ -26,7 +26,7 @@ export function createInitialGame(): TicTacToe {
 		currentPlayer: "X",
 		winner: null,
 		isDraw: false,
-		gameID: crypto.randomUUID()
+		gameID: crypto.randomUUID(),
 	};
 }
 
