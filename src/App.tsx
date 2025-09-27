@@ -10,7 +10,7 @@ function App() {
 	const [selectedID, setSelectedID] = useState<string | undefined>(undefined);
 
 	const handleGameClick = (gameID: string) => {
-		console.log(`GameID: ${gameID} Selected`);
+		console.log(`Selected GameID: ${gameID}`);
 		setSelectedID(gameID);
 	};
 

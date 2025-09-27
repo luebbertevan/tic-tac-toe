@@ -2,6 +2,7 @@ import "./App.css";
 import type { Cell, Winner } from "./types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getGame, makeMove, reset } from "./api";
+import { useEffect, useState } from "react";
 
 type BoxProps = {
 	cell: Cell;
@@ -88,10 +89,22 @@ function Game({
 			queryClient.invalidateQueries({ queryKey: ["game", gameID] }),
 	});
 
+	const [polling, setPolling] = useState(true);
+
 	const { isPending, isFetching, error, data } = useQuery({
 		queryKey: ["game", gameID],
 		queryFn: () => getGame(gameID),
+		refetchInterval: polling ? 1000 : false,
+		staleTime: 5000,
 	});
+
+	// stop polling if there’s an error
+	useEffect(() => {
+		if (error) {
+			setPolling(false);
+		}
+	}, [error]);
+
 	if (isPending) {
 		console.log("Game Loading...");
 		return <h2>Game Loading...</h2>;
@@ -101,7 +114,7 @@ function Game({
 		return <h2>Something went wrong: {error.message}</h2>;
 	}
 	if (isFetching) {
-		console.log("Fetching Game...");
+		//console.log("Fetching Game...");
 	}
 
 	const gameState = data;
