@@ -1,4 +1,4 @@
-// bun run db/test-connection.ts
+// bun run src/db/test-connection.ts
 
 import { db } from './db';
 import { sql } from 'drizzle-orm';
