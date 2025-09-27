@@ -1,4 +1,4 @@
-type Player = "X" | "O";
+export type Player = "X" | "O";
 export type Cell = Player | null;
 export type Winner = Player | null;
 

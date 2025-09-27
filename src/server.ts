@@ -2,40 +2,37 @@ import express, { type Request, type Response } from "express";
 import ViteExpress from "vite-express";
 import { createInitialGame, makeMove } from "./tictactoe";
 import type { TicTacToe } from "./types";
-import { insertGame } from "./db/db"; 
-
+import { getGame, insertGame, listGames, resetGame, updateGame } from "./db/db";
 
 const app = express();
 const PORT = 3000;
 
 app.use(express.json());
 
-const games = new Map<string, TicTacToe>();
-
 app.post("/create", async (_req: Request, res: Response) => {
 	const newGame = createInitialGame();
-	games.set(newGame.gameID, newGame);
 	await insertGame(newGame);
 	res.json({ gameID: newGame.gameID });
 });
 
-app.get("/list", (_req: Request, res: Response) => {
-	res.json([...games.keys()]);
+app.get("/list", async (_req: Request, res: Response) => {
+	const list = await listGames();
+	res.json(list);
 });
 
-app.get("/game/:gameID", (req: Request, res: Response) => {
+app.get("/game/:gameID", async (req: Request, res: Response) => {
 	const gameID = req.params.gameID;
-	const gameState = games.get(gameID);
+	const gameState = await getGame(gameID);
 	if (!gameState) {
 		return res.status(404).json({ error: "Game not found" });
 	}
 	res.json(gameState);
 });
 
-app.post("/move/:gameID", (req: Request, res: Response) => {
+app.post("/move/:gameID", async (req: Request, res: Response) => {
 	const { index } = req.body;
 	const gameID = req.params.gameID;
-	const gameState = games.get(gameID);
+	const gameState = await getGame(gameID);
 	if (!gameState) {
 		return res.status(404).json({ error: "Game not found" });
 	}
@@ -45,20 +42,19 @@ app.post("/move/:gameID", (req: Request, res: Response) => {
 		return res.status(400).json({ error: "Invalid move" });
 	}
 
-	games.set(gameID, newState);
+	await updateGame(newState);
 	res.json(newState);
 });
 
-app.post("/reset/:gameID", (req: Request, res: Response) => {
+app.post("/reset/:gameID", async (req: Request, res: Response) => {
 	const gameID = req.params.gameID;
-	const oldGame = games.get(gameID);
-
-	if (!oldGame) {
-		return res.status(404).json({ error: "Game not found" });
-	}
 
 	const newGame = { ...createInitialGame(), gameID }; // keep the same ID
-	games.set(gameID, newGame);
+	const success = await resetGame(newGame);
+
+	if (!success) {
+		return res.status(404).json({ error: "Game not found" });
+	}
 	res.json(newGame);
 });
 
