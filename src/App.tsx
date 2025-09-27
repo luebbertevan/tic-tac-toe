@@ -7,23 +7,23 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 const queryClient = new QueryClient();
 
 function App() {
-	const [gameID, setGameID] = useState<string | undefined>(undefined);
+	const [selectedID, setSelectedID] = useState<string | undefined>(undefined);
 
 	const handleGameClick = (gameID: string) => {
 		console.log(`GameID: ${gameID} Selected`);
-		setGameID(gameID);
+		setSelectedID(gameID);
 	};
 
 	const handleBackToLobby = () => {
-		setGameID(undefined);
+		setSelectedID(undefined);
 	};
 
 	return (
 		<>
 			<QueryClientProvider client={queryClient}>
-				{gameID ? (
+				{selectedID ? (
 					<div className="text-center">
-						<Game gameID={gameID} onLobbyClick={handleBackToLobby}/>
+						<Game gameID={selectedID} onLobbyClick={handleBackToLobby}/>
 					</div>
 				) : (
 					<GameLobby onGameClick={handleGameClick} />

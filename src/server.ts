@@ -2,6 +2,8 @@ import express, { type Request, type Response } from "express";
 import ViteExpress from "vite-express";
 import { createInitialGame, makeMove } from "./tictactoe";
 import type { TicTacToe } from "./types";
+import { insertGame } from "./db/db"; 
+
 
 const app = express();
 const PORT = 3000;
@@ -10,9 +12,10 @@ app.use(express.json());
 
 const games = new Map<string, TicTacToe>();
 
-app.post("/create", (_req: Request, res: Response) => {
+app.post("/create", async (_req: Request, res: Response) => {
 	const newGame = createInitialGame();
 	games.set(newGame.gameID, newGame);
+	await insertGame(newGame);
 	res.json({ gameID: newGame.gameID });
 });
 
