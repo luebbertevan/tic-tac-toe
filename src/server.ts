@@ -1,7 +1,6 @@
 import express, { type Request, type Response } from "express";
 import ViteExpress from "vite-express";
 import { createInitialGame, makeMove } from "./tictactoe";
-import type { TicTacToe } from "./types";
 import { getGame, insertGame, listGames, resetGame, updateGame } from "./db/db";
 
 const app = express();

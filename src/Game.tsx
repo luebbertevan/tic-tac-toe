@@ -24,7 +24,7 @@ function Box({ cell, onClick }: BoxProps) {
 	return (
 		<div
 			onClick={onClick}
-			className="h-24 w-24 bg-blue-400 flex items-center justify-center text-white font-bold rounded cursor-pointer hover:bg-blue-500"
+			className="h-24 w-24 bg-blue-400 flex items-center justify-center text-white font-bold text-6xl rounded cursor-pointer hover:bg-blue-500"
 		>
 			{cell}
 		</div>
