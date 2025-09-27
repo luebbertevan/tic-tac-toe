@@ -21,6 +21,7 @@ function GameLobby({ onGameClick }: { onGameClick: (id: string) => void }) {
 		queryKey: ["games"],
 		queryFn: getList,
 		refetchInterval: polling ? 1000 : false,
+		staleTime: 5000, 
 	});
 
 	// stop polling if there’s an error
@@ -40,24 +41,24 @@ function GameLobby({ onGameClick }: { onGameClick: (id: string) => void }) {
 	}
 	if (isFetching) {
 		//console.log("Fetching Games List...");
-	} else {
-		return (
-			<div>
-				<h1>Game Lobby</h1>
-				<button
-					key="newGame"
-					onClick={() => createGameMutation.mutate()}
-				>
-					Create Game
-				</button>{" "}
-				{data.map((gameID) => (
-					<button key={gameID} onClick={() => onGameClick(gameID)}>
-						Game ID: {gameID}
-					</button>
-				))}
-			</div>
-		);
-	}
+	} 
+	return (
+		<div>
+			<h1>Game Lobby</h1>
+			<button
+				key="newGame"
+				onClick={() => createGameMutation.mutate()}
+			>
+				Create Game
+			</button>{" "}
+			{data.map((gameID) => (
+				<button key={gameID} onClick={() => onGameClick(gameID)}>
+					Game ID: {gameID}
+				</button>
+			))}
+		</div>
+	);
+	
 }
 
 export default GameLobby;

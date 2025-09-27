@@ -95,6 +95,7 @@ function Game({
 		queryKey: ["game", gameID],
 		queryFn: () => getGame(gameID),
 		refetchInterval: polling ? 1000 : false,
+		staleTime: 5000,
 	});
 
 	// stop polling if there’s an error
